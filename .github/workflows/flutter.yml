@@ -1,0 +1,35 @@
+name: Flutter checks
+
+on:
+  pull_request:
+  push:
+    branches: [main, "codex/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: flutter-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - name: Resolved dependency lockfile
+        run: cat pubspec.lock
+      - run: flutter analyze
+      - run: flutter test
+      - name: Build Android debug APK
+        run: flutter build apk --debug --dart-define=API_BASE_URL=http://10.0.2.2:8000/api
