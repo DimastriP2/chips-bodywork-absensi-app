@@ -98,7 +98,7 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
   }
 
   Future<void> record(bool checkingOut) async {
-    if (submitting || loading || !currentStatus) return;
+    if (submitting || loading || locating || !currentStatus) return;
     setState(() { submitting = true; currentStatus = false; });
     String message;
     try {
@@ -133,7 +133,7 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
   Widget build(BuildContext context) {
     final attendance = today?['attendance'] as Map<String, dynamic>?;
     final state = today?['state'];
-    final valid = currentStatus && !loading && !submitting;
+    final valid = currentStatus && !loading && !submitting && !locating;
     final colors = Theme.of(context).colorScheme;
     final officePoint = office == null ? null : LatLng(
       number(office!['latitude']), number(office!['longitude']),
@@ -167,7 +167,8 @@ class _DashboardPageState extends State<DashboardPage> with WidgetsBindingObserv
           Card(child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Text(state == 'checked_out' ? 'Absensi hari ini lengkap'
+              Text(!currentStatus ? 'Status belum terverifikasi'
+                  : state == 'checked_out' ? 'Absensi hari ini lengkap'
                   : state == 'checked_in' ? 'Sudah masuk, belum pulang'
                   : currentStatus ? 'Siap memulai hari kerja' : 'Status belum terverifikasi',
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),

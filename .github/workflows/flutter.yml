@@ -26,9 +26,7 @@ jobs:
         with:
           channel: stable
           cache: true
-      - run: flutter pub get
-      - name: Resolved dependency lockfile
-        run: cat pubspec.lock
+      - run: flutter pub get --enforce-lockfile
       - run: flutter analyze
       - run: flutter test
       - name: Build Android debug APK

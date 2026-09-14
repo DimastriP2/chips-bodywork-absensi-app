@@ -13,6 +13,7 @@ class _HistoryPageState extends State<HistoryPage> {
   DateTime? month;
   DateTime? latestMonth;
   bool loading = false;
+  bool failedReset = false;
   String? error;
   List<Map<String, dynamic>> records = [];
   int page = 0;
@@ -46,6 +47,7 @@ class _HistoryPageState extends State<HistoryPage> {
   Future<void> fetch({bool reset = false}) async {
     if (loading || month == null) return;
     final nextPage = reset ? 1 : page + 1;
+    failedReset = reset;
     setState(() { loading = true; error = null; });
     try {
       final key = DateFormat('yyyy-MM').format(month!);
@@ -104,7 +106,7 @@ class _HistoryPageState extends State<HistoryPage> {
         child: Column(children: [
           Text(error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           TextButton(onPressed: loading ? null : () {
-            if (month == null) { initialize(); } else { fetch(reset: page == 0); }
+            if (month == null) { initialize(); } else { fetch(reset: failedReset || page == 0); }
           }, child: const Text('Coba lagi')),
         ]),
       ),
