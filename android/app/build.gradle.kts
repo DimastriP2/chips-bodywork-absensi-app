@@ -24,8 +24,10 @@ android {
         applicationId = "com.example.my_flutter_app.my_flutter_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = maxOf(23, flutter.minSdkVersion)
         targetSdk = flutter.targetSdkVersion
+        manifestPlaceholders["MAPS_API_KEY"] = providers.gradleProperty("MAPS_API_KEY")
+            .orElse(providers.environmentVariable("MAPS_API_KEY")).getOrElse("")
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
